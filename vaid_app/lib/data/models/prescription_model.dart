@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PrescriptionModel {
   final String id;
   final String patientId;
@@ -13,20 +15,20 @@ class PrescriptionModel {
     required this.createdAt,
   });
 
-  factory PrescriptionModel.fromJson(Map<String, dynamic> json) {
+  factory PrescriptionModel.fromMap(Map<String, dynamic> data, String documentId) {
     return PrescriptionModel(
-      id: json['_id'],
-      patientId: json['patientId'],
-      doctorId: json['doctorId'],
-      description: json['description'],
-      createdAt: DateTime.parse(json['createdAt']),
+      id: documentId,
+      patientId: data['patientId'] ?? '',
+      doctorId: data['doctorId'] ?? '',
+      description: data['description'] ?? '',
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'patientId': patientId,
         'doctorId': doctorId,
         'description': description,
-        'createdAt': createdAt.toIso8601String(),
+        'createdAt': createdAt,
       };
 }

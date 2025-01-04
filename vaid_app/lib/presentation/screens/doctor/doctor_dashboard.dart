@@ -1,35 +1,38 @@
 import 'package:flutter/material.dart';
 import '../../../data/models/user_model.dart';
+import 'doctor_patient_list_screen.dart';
+import 'doctor_prescription_form_screen.dart';
 
-class DoctorDashboard extends StatefulWidget {
+class DoctorDashboard extends StatelessWidget {
   final UserModel user;
   const DoctorDashboard({Key? key, required this.user}) : super(key: key);
 
   @override
-  _DoctorDashboardState createState() => _DoctorDashboardState();
-}
-
-class _DoctorDashboardState extends State<DoctorDashboard> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Doctor Dashboard - ${widget.user.name}'),
+        title: Text('Doctor Dashboard - ${user.name}'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Welcome, Dr. ${widget.user.name}!'),
+            Text('Welcome, Dr. ${user.name}'),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/doctorPatientList', arguments: widget.user);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => DoctorPatientListScreen(user: user)),
+                );
               },
               child: const Text('View Patient List'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/doctorPrescriptionForm', arguments: widget.user);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => DoctorPrescriptionFormScreen(user: user)),
+                );
               },
               child: const Text('Create Prescription'),
             ),

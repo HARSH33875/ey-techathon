@@ -1,28 +1,21 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../config/constants.dart';
 
 class EmergencyService {
-  static Future<bool> callEmergency({
-    required String patientId,
-    required String token,
-    required double latitude,
-    required double longitude,
-  }) async {
-    final url = Uri.parse('${AppConstants.baseUrl}/api/emergency');
-    final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'patientId': patientId,
-        'lat': latitude,
-        'lng': longitude,
-      }),
-    );
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-    return response.statusCode == 200;
+  // Log an emergency event in Firestore
+  static Future<void> callEmergency({
+    required String patientId,
+    required double lat,
+    required double lng,
+  }) async {
+    await _db.collection(AppConstants.emergenciesCollection).add({
+      'patientId': patientId,
+      'lat': lat,
+      'lng': lng,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 }

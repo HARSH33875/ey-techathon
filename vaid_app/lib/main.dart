@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'config/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'presentation/screens/auth/splash_screen.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/auth/register_screen.dart';
@@ -8,8 +9,13 @@ import 'presentation/screens/patient/patient_emergency_screen.dart';
 import 'presentation/screens/doctor/doctor_dashboard.dart';
 // Import other screens as needed
 import 'data/models/user_model.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const TravelingDoctorApp());
 }
 

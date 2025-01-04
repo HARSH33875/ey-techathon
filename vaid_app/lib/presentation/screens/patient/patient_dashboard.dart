@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import '../../../data/models/user_model.dart';
+import 'patient_emergency_screen.dart';
+import 'patient_prescriptions_screen.dart';
 
-class PatientDashboard extends StatefulWidget {
+class PatientDashboard extends StatelessWidget {
   final UserModel user;
   const PatientDashboard({Key? key, required this.user}) : super(key: key);
 
   @override
-  _PatientDashboardState createState() => _PatientDashboardState();
-}
-
-class _PatientDashboardState extends State<PatientDashboard> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Patient Dashboard - ${widget.user.name}'),
+        title: Text('Patient Dashboard - ${user.name}'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Welcome, ${widget.user.name}!'),
+            Text('Welcome, ${user.name}'),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/patientEmergency', arguments: widget.user);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PatientEmergencyScreen(user: user)),
+                );
               },
               child: const Text('Emergency Call'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/patientPrescriptions', arguments: widget.user);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PatientPrescriptionsScreen(user: user)),
+                );
               },
               child: const Text('View Prescriptions'),
             ),

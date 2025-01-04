@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/services/emergency_service.dart';
-import '../../../data/services/location_service.dart';
 import '../../../data/models/user_model.dart';
+import '../../../data/services/location_service.dart';
+import '../../../data/services/emergency_service.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PatientEmergencyScreen extends StatefulWidget {
@@ -16,22 +16,21 @@ class _PatientEmergencyScreenState extends State<PatientEmergencyScreen> {
   bool _isLoading = false;
   String _statusMessage = '';
 
-  void _callEmergency() async {
+  Future<void> _callEmergency() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
     });
     try {
       Position position = await LocationService.getCurrentLocation();
-      bool success = await EmergencyService.callEmergency(
-        patientId: widget.user.id,
-        token: widget.user.token,
-        latitude: position.latitude,
-        longitude: position.longitude,
+      await EmergencyService.callEmergency(
+        patientId: widget.user.uid,
+        lat: position.latitude,
+        lng: position.longitude,
       );
       setState(() {
         _isLoading = false;
-        _statusMessage = success ? 'Emergency Call Sent!' : 'Emergency Call Failed!';
+        _statusMessage = 'Emergency call logged successfully!';
       });
     } catch (e) {
       setState(() {
@@ -45,25 +44,25 @@ class _PatientEmergencyScreenState extends State<PatientEmergencyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Emergency'),
+        title: const Text('Emergency Call'),
       ),
       body: Center(
-        child: _isLoading 
-          ? const CircularProgressIndicator()
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _callEmergency,
-                  child: const Text('Call Nearest Doctor'),
-                ),
-                if (_statusMessage.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(_statusMessage),
+        child: _isLoading
+            ? const CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: _callEmergency,
+                    child: const Text('Call Nearest Doctor'),
                   ),
-              ],
-            ),
+                  if (_statusMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(_statusMessage),
+                    ),
+                ],
+              ),
       ),
     );
   }

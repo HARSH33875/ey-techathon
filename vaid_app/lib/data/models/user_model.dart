@@ -1,25 +1,28 @@
 class UserModel {
-  final String id;
+  final String uid;
   final String email;
   final String name;
-  final String role; // e.g., doctor or patient
-  final String token; // JWT token from server, if using
+  final String role; // 'doctor' or 'patient'
 
   UserModel({
-    required this.id,
+    required this.uid,
     required this.email,
     required this.name,
     required this.role,
-    required this.token,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromMap(Map<String, dynamic> data, String documentId) {
     return UserModel(
-      id: json['_id'] as String,
-      email: json['email'] as String,
-      name: json['name'] as String,
-      role: json['role'] as String,
-      token: json['token'] ?? '',
+      uid: documentId,
+      email: data['email'] ?? '',
+      name: data['name'] ?? '',
+      role: data['role'] ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'email': email,
+        'name': name,
+        'role': role,
+      };
 }

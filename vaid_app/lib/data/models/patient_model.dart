@@ -1,26 +1,26 @@
 class PatientModel {
-  final String id;
+  final String uid;    // Reference to the Firestore doc ID
   final String name;
   final List<String> diseaseHistory;
-  final String? location; // lat,long
+  final String? location; // Could store lat-long or address
 
   PatientModel({
-    required this.id,
+    required this.uid,
     required this.name,
     required this.diseaseHistory,
     this.location,
   });
 
-  factory PatientModel.fromJson(Map<String, dynamic> json) {
+  factory PatientModel.fromMap(Map<String, dynamic> data, String documentId) {
     return PatientModel(
-      id: json['_id'],
-      name: json['name'],
-      diseaseHistory: List<String>.from(json['diseaseHistory'] ?? []),
-      location: json['location'],
+      uid: documentId,
+      name: data['name'] ?? '',
+      diseaseHistory: List<String>.from(data['diseaseHistory'] ?? []),
+      location: data['location'],
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'name': name,
         'diseaseHistory': diseaseHistory,
         'location': location,

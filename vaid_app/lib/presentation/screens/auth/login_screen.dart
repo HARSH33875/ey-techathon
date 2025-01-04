@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/services/auth_service.dart';
-import '../../../data/models/user_model.dart';
+import '../../../data/services/firebase_auth_service.dart';
+import '../doctor/doctor_dashboard.dart';
+import '../patient/patient_dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,25 +22,29 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = '';
     });
 
-    final user = await AuthService.login(
-      email: _emailController.text,
-      password: _passwordController.text,
+    final userModel = await FirebaseAuthService.signInWithEmail(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
     );
 
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() => _isLoading = false);
 
-    if (user != null) {
+    if (userModel != null) {
       // Navigate based on role
-      if (user.role == 'doctor') {
-        Navigator.pushReplacementNamed(context, '/doctorDashboard', arguments: user);
+      if (userModel.role == 'doctor') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => DoctorDashboard(user: userModel)),
+        );
       } else {
-        Navigator.pushReplacementNamed(context, '/patientDashboard', arguments: user);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => PatientDashboard(user: userModel)),
+        );
       }
     } else {
       setState(() {
-        _errorMessage = 'Invalid credentials';
+        _errorMessage = 'Invalid credentials or user not found';
       });
     }
   }
@@ -63,21 +68,21 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
+            const SizedBox(height: 16),
             if (_errorMessage.isNotEmpty) 
               Text(_errorMessage, style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             _isLoading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
-                    child: const Text('Login'),
                     onPressed: _login,
+                    child: const Text('Login'),
                   ),
-            const SizedBox(height: 10),
             TextButton(
-              child: const Text('Register'),
               onPressed: () {
                 Navigator.pushNamed(context, '/register');
               },
+              child: const Text('Create an account'),
             ),
           ],
         ),
